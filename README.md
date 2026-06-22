@@ -47,7 +47,11 @@ Sistem login/register menggunakan Firebase Authentication. Watchlist disimpan di
 ```bash
 npm install
 npx expo start
+
+
 ```
 
 ## 🌐 Link Aplikasi
 [MovieVault - Vercel](https://project-qph7e.vercel.app)
+--
+[Repository_GitHub](https://github.com/sennaaaaa7/EAS_ValensSena)
