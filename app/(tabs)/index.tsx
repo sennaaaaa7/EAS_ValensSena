@@ -1,98 +1,140 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
-
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
+import LoadingSpinner from "@/components/LoadingSpinner";
+import MovieCard from "@/components/MovieCard";
+import { Colors } from "@/constants/Colors";
+import { useAuth } from "@/hooks/useAuth";
+import { fetchPopularMovies, fetchTrendingMovies, Movie } from "@/services/tmdb";
+import { useRouter } from "expo-router";
+import React, { useCallback, useEffect, useState } from "react";
+import {
+  FlatList,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
-  return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
+  const { user, logout } = useAuth();
+  const router = useRouter();
+  const [popular, setPopular] = useState<Movie[]>([]);
+  const [trending, setTrending] = useState<Movie[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+  const loadMovies = useCallback(async () => {
+    try {
+      setError(null);
+      const [popularData, trendingData] = await Promise.all([
+        fetchPopularMovies(1),
+        fetchTrendingMovies(),
+      ]);
+      setPopular(popularData);
+      setTrending(trendingData.slice(0, 6));
+    } catch {
+      setError("Gagal memuat film. Periksa koneksi internet kamu.");
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  }, []);
+
+  useEffect(() => { loadMovies(); }, [loadMovies]);
+
+  const handleLogout = async () => {
+    if (window.confirm("Yakin ingin keluar?")) {
+      await logout();
+      router.replace("/auth/login");
+    }
+  };
+
+  if (loading) return <LoadingSpinner message="Memuat film..." />;
+
+  return (
+    <SafeAreaView style={styles.safe}>
+      <ScrollView
+        style={styles.container}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={() => { setRefreshing(true); loadMovies(); }}
+            tintColor={Colors.primary}
+          />
+        }
+      >
+        <View style={styles.header}>
+          <View>
+            <Text style={styles.appName}>🎬 MovieVault</Text>
+            <Text style={styles.greeting}>Halo, {user?.email?.split("@")[0]} 👋</Text>
+          </View>
+          <TouchableOpacity onPress={handleLogout} style={styles.logoutBtn}>
+            <Text style={styles.logoutText}>Logout</Text>
+          </TouchableOpacity>
+        </View>
+
+        {error && (
+          <View style={styles.errorBox}>
+            <Text style={styles.errorText}>{error}</Text>
+            <TouchableOpacity onPress={loadMovies}>
+              <Text style={styles.retryText}>Coba Lagi</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>🔥 Trending Hari Ini</Text>
+          <FlatList
+            data={trending}
+            horizontal
+            keyExtractor={(item) => `trend-${item.id}`}
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.horizontalList}
+            renderItem={({ item }) => <MovieCard movie={item} />}
+          />
+        </View>
+
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>⭐ Film Populer</Text>
+          <View style={styles.grid}>
+            {popular.map((movie) => <MovieCard key={`pop-${movie.id}`} movie={movie} />)}
+          </View>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+  safe: { flex: 1, backgroundColor: Colors.background },
+  container: { flex: 1, backgroundColor: Colors.background },
+  header: {
+    flexDirection: "row", justifyContent: "space-between",
+    alignItems: "center", paddingHorizontal: 16, paddingVertical: 16,
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  appName: { fontSize: 22, fontWeight: "800", color: Colors.primary },
+  greeting: { color: Colors.textMuted, fontSize: 13, marginTop: 2 },
+  logoutBtn: {
+    backgroundColor: Colors.surface, paddingHorizontal: 14,
+    paddingVertical: 8, borderRadius: 8, borderWidth: 1, borderColor: Colors.border,
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  logoutText: { color: Colors.textMuted, fontSize: 13, fontWeight: "600" },
+  section: { marginBottom: 24 },
+  sectionTitle: {
+    color: Colors.text, fontSize: 17, fontWeight: "700",
+    marginBottom: 12, paddingHorizontal: 16,
   },
+  horizontalList: { paddingHorizontal: 16, gap: 12 },
+  grid: {
+    flexDirection: "row", flexWrap: "wrap",
+    paddingHorizontal: 16, gap: 16, justifyContent: "space-between",
+  },
+  errorBox: {
+    margin: 16, backgroundColor: "#3B1111",
+    padding: 14, borderRadius: 8, alignItems: "center", gap: 8,
+  },
+  errorText: { color: Colors.error, fontSize: 14, textAlign: "center" },
+  retryText: { color: Colors.primary, fontWeight: "700" },
 });
