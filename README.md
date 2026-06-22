@@ -48,12 +48,9 @@ Sistem login/register menggunakan Firebase Authentication. Watchlist disimpan di
 npm install
 npx expo start
 
-Scan QR code menggunakan aplikasi **Expo Go** di smartphone, atau tekan `w` untuk membuka di browser.
 
----
-
- 🌐 Link Aplikasi
-
-[MovieVault - Vercel](https://project-qph7e.vercel.app)
-[Repository GitHub](https://github.com/sennaaaaa7/EAS_ValensSena)
 ```
+
+## 🌐 Link Aplikasi
+[MovieVault - Vercel](https://project-qph7e.vercel.app)
+[Repository_GitHub] (https://github.com/sennaaaaa7/EAS_ValensSena)
