@@ -52,8 +52,8 @@ Scan QR code menggunakan aplikasi **Expo Go** di smartphone, atau tekan `w` untu
 
 ---
 
-## 🌐 Link
+ 🌐 Link Aplikasi
 
-- **Aplikasi (Web):** https://project-qph7e.vercel.app
-- **Repository GitHub:** https://github.com/sennaaaaa7/EAS_ValensSena
+[MovieVault - Vercel](https://project-qph7e.vercel.app)
+[Repository GitHub](https://github.com/sennaaaaa7/EAS_ValensSena)
 ```
