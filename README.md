@@ -8,8 +8,8 @@ Aplikasi mobile berbasis React Native untuk menjelajahi dan menyimpan film favor
 
 | Nama | NIM | Peran | Tanggung Jawab |
 |---|---|---|---|
-| [Valent Febriasyah] | [0923040087] | Frontend & Axios Specialist | Merancang seluruh UI/UX dan integrasi Axios ke TMDB API |
-| [Sena Kukuh Wiro Jatmiko] | [0923040086] | Backend & Firebase Specialist | State management dan integrasi Firebase Auth + Firestore |
+| Valent Febriasyah | 0923040087 | Frontend & Axios Specialist | Merancang seluruh UI/UX dan integrasi Axios ke TMDB API |
+| Sena Kukuh Wiro Jatmiko | 0923040086 | Backend & Firebase Specialist | State management dan integrasi Firebase Auth + Firestore |
 
 ---
 
