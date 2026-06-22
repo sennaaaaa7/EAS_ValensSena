@@ -1,50 +1,53 @@
-# Welcome to your Expo app 👋
+# 🎬 MovieVault — EAS Mobile Computing 2025/2026
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Aplikasi mobile berbasis React Native untuk menjelajahi dan menyimpan film favorit, menggunakan TMDB API dan Firebase.
 
-## Get started
+---
 
-1. Install dependencies
+## 👥 Anggota Tim & Pembagian Tugas
 
-   ```bash
-   npm install
-   ```
+| Nama | NIM | Peran | Tanggung Jawab |
+|---|---|---|---|
+| [Valent Febriasyah] | [0923040087] | Frontend & Axios Specialist | Merancang seluruh UI/UX dan integrasi Axios ke TMDB API |
+| [Sena Kukuh Wiro Jatmiko] | [0923040086] | Backend & Firebase Specialist | State management dan integrasi Firebase Auth + Firestore |
 
-2. Start the app
+---
 
-   ```bash
-   npx expo start
-   ```
+## 📱 Tentang Aplikasi
 
-In the output, you'll find options to open the app in a
+MovieVault adalah aplikasi mobile yang memungkinkan pengguna untuk menjelajahi film populer dan trending, mencari film berdasarkan judul, serta menyimpan film ke dalam daftar watchlist pribadi yang tersimpan di cloud.
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+---
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+## 🔌 API yang Digunakan
 
-## Get a fresh project
+| Layanan | Kegunaan |
+|---|---|
+| **TMDB API** (api.themoviedb.org) | Mengambil data film (popular, trending, search, detail) via Axios |
+| **Firebase Authentication** | Sistem login dan register pengguna |
+| **Cloud Firestore** | Menyimpan dan membaca data watchlist per user secara real-time |
 
-When you're ready, run:
+---
+
+## ✅ 3 Fitur Utama
+
+### Fitur 1 — Browse Film (Axios)
+Menampilkan film populer dan trending di halaman Home menggunakan Axios. Dua request dijalankan secara paralel menggunakan Promise.all untuk efisiensi.
+
+### Fitur 2 — Pencarian Film (Axios + Debounce)
+Pencarian film berdasarkan judul menggunakan Axios dengan teknik debounce 500ms untuk mencegah request berlebihan.
+
+### Fitur 3 — Watchlist (Firebase Auth + Firestore)
+Sistem login/register menggunakan Firebase Authentication. Watchlist disimpan di Cloud Firestore dengan real-time listener menggunakan onSnapshot.
+
+---
+
+## 🚀 Cara Menjalankan
 
 ```bash
-npm run reset-project
+npm install
+npx expo start
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+## 🌐 Link Aplikasi
+[MovieVault - Vercel](https://project-qph7e.vercel.app)
